@@ -1,14 +1,25 @@
-name: Build and Deploy
-on: [push]
+name: Deploy
+on:
+  push:
+    branches: master
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@master
-
-      - name: Build and Deploy
-        uses: testthedocs/github-pages-deploy-action@master
-        env:
-          BUILD_DIR: src/.vuepress/dist
-          BUILD_SCRIPT: npm install && npm run-script build && echo keyv.mod.land > src/.vuepress/dist/CNAME
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - name: Build documentation
+        run: |
+          cd docs
+          yarn install
+          yarn build
+      - name: Deploy documentation
+        if: success()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./src/.vuepress/dist
+          commit_message: ${{ github.event.head_commit.message }}
+          cname: keyv.mod.land
+          keep_files: true
+          enable_jekyll: false
