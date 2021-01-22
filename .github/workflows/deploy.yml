@@ -10,6 +10,5 @@ jobs:
       - name: Build and Deploy
         uses: testthedocs/github-pages-deploy-action@master
         env:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           BUILD_DIR: src/.vuepress/dist
           BUILD_SCRIPT: npm install && npm run-script build && echo keyv.mod.land > src/.vuepress/dist/CNAME
