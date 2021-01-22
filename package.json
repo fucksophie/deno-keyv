@@ -1,0 +1,23 @@
+{
+  "name": "Keyv",
+  "version": "0.0.1",
+  "description": "Keyv is a simple and lightweight, easy to use database wrapper made for the Javascript runtime envoirement, Deno, designed for quick setup and fast results.",
+  "main": "index.js",
+  "authors": {
+    "name": "Tejas Agarwal",
+    "email": "togedemaru.1707@gmail.com"
+  },
+  "repository": "https://github.com/CyberKnight007/deno-keyv",
+  "scripts": {
+    "dev": "vuepress dev src",
+    "build": "vuepress build src"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vuepress": "^1.5.3"
+  },
+  "dependencies": {
+    "vuepress-theme-default-prefers-color-scheme": "^2.0.0",
+    "vuepress-theme-yuu": "^2.3.0"
+  }
+}
