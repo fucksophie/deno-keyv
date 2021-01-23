@@ -23,6 +23,8 @@ module.exports = {
       { name: "apple-mobile-web-app-status-bar-style", content: "black" },
     ],
   ],
+  
+base: "/deno-keyv/",
 
   /**
    * Theme configuration, here is the default theme configuration for VuePress.
