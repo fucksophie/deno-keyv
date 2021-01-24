@@ -24,7 +24,7 @@ module.exports = {
     ],
   ],
   
-base: "/deno-keyv/",
+base: "/",
 
   /**
    * Theme configuration, here is the default theme configuration for VuePress.
