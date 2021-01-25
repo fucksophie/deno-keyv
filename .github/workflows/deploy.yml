@@ -17,7 +17,9 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          cname: keyv.mod.land
           publish_dir: ./src/.vuepress/dist
           commit_message: ${{ github.event.head_commit.message }}
           keep_files: true
           enable_jekyll: false
+
