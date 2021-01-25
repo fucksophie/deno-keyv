@@ -55,7 +55,7 @@ module.exports = {
         {
           title: "Documentation",
           collapsable: false,
-          children: ["providers/SqliteProvider"],
+          children: ["providers/SqliteProvider", "providers/PostgresProvider"],
         },
       ],
     },

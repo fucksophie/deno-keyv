@@ -2,6 +2,9 @@
 
 ---
 
+```ts
+import { DB } from "https://deno.land/x/keyv/mod.ts";
+```
 ### new DB(databaseFilePath, tableName)
 
 This returns a instance of the DB class.
