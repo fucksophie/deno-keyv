@@ -33,6 +33,8 @@ This sets a value to the database and returns the new value of the key.
 
 ```ts
 const data = await db.set("user", { money: 100 });
+// OR
+const data = await db.set("user.money", 100)
 ```
 
 ---
