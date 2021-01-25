@@ -32,7 +32,7 @@ module.exports = {
    * ref：https://v1.vuepress.vuejs.org/theme/default-theme-config.html
    */
   themeConfig: {
-    repo: "https://github.com/tejasag/deno-keyv/tree/docs",
+    // repo: "https://github.com/tejasag/deno-keyv/tree/docs",
     editLinks: true,
     docsDir: "src",
     editLinkText: "Edit this page",
@@ -46,6 +46,10 @@ module.exports = {
         text: "Github",
         link: "https://github.com/tejasag/deno-keyv",
       },
+      {
+        text: "Deno",
+        link: "https://deno.land/x/keyv/"
+      }
     ],
     sidebar: {
       "/docs/": [

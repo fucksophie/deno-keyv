@@ -22,7 +22,7 @@ Port is optional and defaults to 5432.
 Adding this method after you create a new instance of the database is very important as without this, the data won't be synced properly.
 
 ```ts
-db.init();
+await db.init();
 ```
 
 ---
