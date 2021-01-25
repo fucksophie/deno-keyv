@@ -49,10 +49,6 @@ console.log(age);
 // Output -> 33
 ```
 
-## Docs
-
-soon™
-
 ## Support
 
 If you need help regarding the wrapper, feel free to open a [issue](https://github.com/tejasag/deno-keyv/issues) or ask in the [Help discussions category](https://github.com/tejasag/deno-keyv/discussions/categories/help) on github. You can also DM me on discord `Tejas#9134`.
