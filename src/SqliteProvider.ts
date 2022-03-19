@@ -33,6 +33,17 @@ export class SqliteProvider {
       ...this.db.query(`SELECT * FROM ${this.tablename}`).asObjects(),
     ].forEach((row) => this.collection.set(row.key, row.value));
   }
+  /**
+   * Delete a value in the database
+   * @param key Key to be deleted
+   * ```ts
+   * db.delete("john");
+   * ```
+   */
+  delete(key: string) {
+    this.db.query(`DELETE FROM ${this.tablename} WHERE key = ?`, [key])
+    this.collection.delete(key);
+  }
 
   /**
    * Set a value to the database
@@ -40,14 +51,14 @@ export class SqliteProvider {
    * @param value The value
    * @returns The updated value in the database.
    * ```ts
-   * await db.set("john.gender", "male");
+   * db.set("john.gender", "male");
    * ```
    */
-  async set(key: string, value: any) {
-    let unparsed = key.split(".");
+  set(key: string, value: any) {
+    const unparsed = key.split(".");
     key = `${unparsed.shift()}`;
 
-    let cachedData = this.collection.get(key) || {};
+    const cachedData = this.collection.get(key) || {};
     let lodashedData = _.set(
       cachedData,
       unparsed.length > 1 ? unparsed : key,
@@ -66,6 +77,7 @@ export class SqliteProvider {
         .query(`SELECT * FROM ${this.tablename} WHERE key = ?`, [key])
         .asObjects(),
     ];
+
     if (fetchQuery.length < 0) {
       this.db.query(
         `INSERT INTO ${this.tablename} (key, value) VALUES (?, ?)`,
@@ -94,27 +106,27 @@ export class SqliteProvider {
    * @param default The default value to get if the original key wasnt found.
    * @returns  The value fetched from the database.
    * ```ts
-   * const john = await db.get("john")
+   * const john = db.get("john")
    * ```
    */
-  async get(key: string, defaultValue: any = "") {
+  get(key: string, defaultValue: any = "") {
     let data;
     let collection;
 
     if (key.includes(".")) {
-      let array = key.split(".");
+      const array = key.split(".");
       collection = this.collection.get(array[0]);
-      let exists = this.collection.has(array[0]);
+      const exists = this.collection.has(array[0]);
       array.shift();
-      let prop = array.join(".");
+      const prop = array.join(".");
       if (!exists) {
-        await this.set(key, defaultValue);
+        this.set(key, defaultValue);
       }
       data = _.get(collection, prop, null);
     } else {
-      let exists = this.collection.has(key);
+      const exists = this.collection.has(key);
       if (!exists) {
-        await this.set(key, defaultValue);
+        this.set(key, defaultValue);
       }
       data = this.collection.get(key);
     }
@@ -125,8 +137,8 @@ export class SqliteProvider {
   /**
    * Alias to the `.get` method.
    */
-  async fetch(key: string, defaultValue: any = "") {
-    await this.get(key, defaultValue);
+  fetch(key: string, defaultValue: any = "") {
+    this.get(key, defaultValue);
   }
 
   /**
@@ -135,45 +147,45 @@ export class SqliteProvider {
    * @param value The value to add in the array.
    * @returns The updated value of the key
    * ```ts
-   * await db.push("john.children", "Suzy");
+   * db.push("john.children", "Suzy");
    * ```
    */
-  async push(key: string, ...value: any[]) {
-    let fetched = await this.get(key);
+  push(key: string, ...value: any[]) {
+    const fetched = this.get(key);
     for (let v in value) {
       v = value[v];
       if (!fetched) {
-        let array = [];
+        const array = [];
         array.push(v);
-        await this.set(key, array);
+        this.set(key, array);
       } else {
         if (!Array.isArray(fetched)) {
-          let array = [];
+          const array = [];
           array.push(fetched);
           array.push(v);
-          await this.set(key, array);
+          this.set(key, array);
         } else {
           fetched.push(v);
-          await this.set(key, fetched);
+          this.set(key, fetched);
         }
       }
     }
 
-    return await this.get(key);
+    return this.get(key);
   }
 
   /**
    * Select all keys from the database!
    * @returns All the data in the database
    * ```ts
-   * const all = await db.all();
+   * const all = db.all();
    * ```
    */
-  async all() {
-    let fetched = [
+  all() {
+    const fetched = [
       ...this.db.query(`SELECT * FROM ${this.tablename}`).asObjects(),
     ];
-    let data = new Map();
+    const data = new Map();
     for (const o of fetched) data.set(o.key, JSON.parse(o.value));
     return Object.fromEntries(data);
   }
@@ -183,16 +195,18 @@ export class SqliteProvider {
    * @param key - The value to check.
    * @return Whether the database has the key or not
    * ```ts
-   * const result = await db.has("john");
+   * const result = db.has("john");
    * ```
    */
-  async has(key: string) {
+  has(key: string) {
     if (key.includes(".")) {
-      let split = key.split(".");
-      let collection = await this.get(`${split.shift()}`);
-      let prop = split.join(".");
+      const split = key.split(".");
+      const collection = this.get(`${split.shift()}`);
+      const prop = split.join(".");
       return _.has(collection, prop);
     }
     return this.collection.has(key);
   }
+
+
 }

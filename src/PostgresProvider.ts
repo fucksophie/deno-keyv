@@ -16,15 +16,15 @@ import { Pool, PoolClient, _, Collection, QueryObjectResult } from "../deps.ts";
 export class PostgresProvider {
   private db: Pool;
   private collection: Collection;
-  private tablename: String;
-  private clientOptions: Object;
+  private tablename: string;
+  private clientOptions = {};
 
   constructor(
-    tablename: String,
-    user: String,
-    database: String,
-    hostname: String,
-    password: String,
+    tablename: string,
+    user: string,
+    database: string,
+    hostname: string,
+    password: string,
     port?: number
   ) {
     this.clientOptions = {
@@ -44,6 +44,21 @@ export class PostgresProvider {
     const dbResult: QueryObjectResult<Record<string, string>> = await client.queryObject(query, ...args);
     client.release();
     return dbResult.rows;
+  }
+  
+  /**
+   * Delete a value in the database
+   * @param key Key to be deleted
+   * ```ts
+   * await db.delete("john");
+   * ```
+   */
+   async delete(key: string) {
+    await this.runQuery(
+      `DELETE FROM ${this.tablename} WHERE key = $1;`,
+      key
+    )
+    this.collection.delete(key);
   }
 
   /**
@@ -76,13 +91,13 @@ export class PostgresProvider {
   async set(key: string, value: any) {
     let unparsed;
     if (key.includes(".")) {
-      let split = key.split(".");
+      const split = key.split(".");
       key = split[0];
       split.shift();
       unparsed = split;
     }
 
-    let cachedData = this.collection.get(key) || {};
+    const cachedData = this.collection.get(key) || {};
     let lodashedData = _.set(cachedData, unparsed || key, value);
 
     if (unparsed) {
@@ -134,17 +149,17 @@ export class PostgresProvider {
     let collection;
 
     if (key.includes(".")) {
-      let array = key.split(".");
+      const array = key.split(".");
       collection = this.collection.get(array[0]);
-      let exists = this.collection.has(array[0]);
+      const exists = this.collection.has(array[0]);
       array.shift();
-      let prop = array.join(".");
+      const prop = array.join(".");
       if (!exists) {
         await this.set(key, defaultValue || "");
       }
       data = _.get(collection, prop, null);
     } else {
-      let exists = this.collection.has(key);
+      const exists = this.collection.has(key);
       if (!exists) {
         await this.set(key, defaultValue || "");
       }
@@ -175,19 +190,19 @@ export class PostgresProvider {
    * ```
    */
   async push(key: string, ...value: any[]) {
-    let fetched = await this.get(key);
+    const fetched = await this.get(key);
     console.log(`fetched: ${fetched}`);
     console.log(`value: ${value}`);
     for (let v in value) {
       v = value[v];
       if (!fetched) {
-        let array = [];
+        const array = [];
         array.push(v);
         console.log(array);
         await this.set(key, array);
       } else {
         if (!Array.isArray(fetched)) {
-          let array = [];
+          const array = [];
           array.push(fetched);
           array.push(v);
           await this.set(key, array);
@@ -209,11 +224,11 @@ export class PostgresProvider {
    * ```
    */
   async all() {
-    let fetched = await this.runQuery(`SELECT * FROM ${this.tablename}`);
+    const fetched = await this.runQuery(`SELECT * FROM ${this.tablename}`);
 
-    let data = new Map();
+    const data = new Map();
     fetched.forEach(o => {
-      let value = JSON.parse(o["value"]);
+      const value = JSON.parse(o["value"]);
       data.set(o.key, value);
     })
     return Object.fromEntries(data);
@@ -229,11 +244,11 @@ export class PostgresProvider {
    */
   async has(key: string) {
     if (key.includes(".")) {
-      let split = key.split(".");
-      let first = split[0];
-      let collection = await this.get(first);
+      const split = key.split(".");
+      const first = split[0];
+      const collection = await this.get(first);
       split.shift();
-      let prop = split.join(".");
+      const prop = split.join(".");
       return _.has(collection, prop);
     }
     return this.collection.has(key);
